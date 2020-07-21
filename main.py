@@ -7,11 +7,10 @@ class Team:
     def __init__(self, id):
         self.id = id
 
-    def get_soup(self):
+    def get_soup(self, uri: str):
         'Get a soup from the website'
 
-        prime_url = "https://www.primeleague.gg/de/leagues/teams/"
-        response = requests.get(prime_url + self.id)
+        response = requests.get(uri + self.id)
         soup = BeautifulSoup(response.text, "html.parser")
         return soup
 
@@ -19,12 +18,11 @@ class Team:
     def generate_opgg(self):
         'Generate a op.gg link with all summoners from the team'
 
-        soup = self.get_soup()
+        team_soup = self.get_soup("https://www.primeleague.gg/de/leagues/teams/")
 
         op_link = "https://euw.op.gg/multi/query="
-        summonerlist = soup.find_all('span', title="League of Legends » LoL Summoner Name (EU West)")
 
-        for i in soup.find_all('span', title="League of Legends » LoL Summoner Name (EU West)"):
+        for i in team_soup.find_all("span", title="League of Legends » LoL Summoner Name (EU West)"):
             summoner = i.get_text()
             print(summoner)
             op_link += ("%2C" + summoner.replace(" ",""))
