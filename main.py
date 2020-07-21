@@ -22,9 +22,8 @@ class Team:
         soup = self.get_soup()
 
         op_link = "https://euw.op.gg/multi/query="
-        summonerlist = soup.find_all('span', title="League of Legends » LoL Summoner Name (EU West)")
 
-        for i in soup.find_all('span', title="League of Legends » LoL Summoner Name (EU West)"):
+        for i in soup.find_all("span", title="League of Legends » LoL Summoner Name (EU West)"):
             summoner = i.get_text()
             print(summoner)
             op_link += ("%2C" + summoner.replace(" ",""))
