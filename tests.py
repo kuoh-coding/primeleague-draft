@@ -12,4 +12,4 @@ args = parser.parse_args()
 
 eko = Team(args.id)
 
-eko.get_links()
+eko.generate_opgg()

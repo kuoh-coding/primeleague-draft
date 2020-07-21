@@ -3,33 +3,35 @@
 import requests
 from bs4 import BeautifulSoup
 
-base_url = "https://www.primeleague.gg/de/leagues/teams/"
-
 class Team:
-    'Create a Team Object with Primeleague ID and their matches'
-
-    id = 0
-    match = 0
-
     def __init__(self, id):
         self.id = id
 
-    # TODO: only gives a soup not the match links
-    def get_matches(self):
-        'Retrieve all matches from the Teams site'
+    def get_soup(self):
+        'Get a soup from the website'
 
-        response = requests.get(base_url + self.id)
+        prime_url = "https://www.primeleague.gg/de/leagues/teams/"
+        response = requests.get(prime_url + self.id)
         soup = BeautifulSoup(response.text, "html.parser")
         return soup
 
-    def get_links(self):
-        'A test to retrieve all links - can be deleted later'
 
-        soup = self.get_matches()
+    def generate_opgg(self):
+        'Generate a op.gg link with all summoners from the team'
 
-        for link in soup.find_all('a'):
-            print(link.get('href'))
+        soup = self.get_soup()
 
-    # TODO
-    def get_summoners(self):
+        op_link = "https://euw.op.gg/multi/query="
+        summonerlist = soup.find_all('span', title="League of Legends » LoL Summoner Name (EU West)")
+
+        for i in soup.find_all('span', title="League of Legends » LoL Summoner Name (EU West)"):
+            summoner = i.get_text()
+            print(summoner)
+            op_link += ("%2C" + summoner.replace(" ",""))
+
+        print(op_link)
+
+
+    # TODO: should return an array with all matches from the team
+    def get_matches(self):
         return None
