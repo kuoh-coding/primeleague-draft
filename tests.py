@@ -1,10 +1,15 @@
 #!/bin/python3
 
+import argparse
+
+# local
 from main import Team
 
-eko = Team(id)
+parser = argparse.ArgumentParser()
+parser.add_argument("-id", help="Set Team ID")
+args = parser.parse_args()
 
-soup = eko.get_matches()
 
-for e in soup.find_all('a'):
-    print(e.get('href'))
+eko = Team(args.id)
+
+eko.get_links()
