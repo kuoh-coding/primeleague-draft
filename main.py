@@ -33,3 +33,24 @@ class Team:
     # TODO: should return an array with all matches from the team
     def get_matches(self):
         return None
+
+
+    def get_champions(self):
+        'returns a dictionary with summoners and champions'
+        
+        match_soup = self.get_soup("https://www.primeleague.gg/de/leagues/matches/")
+
+        'extracts the summoner names'
+        summoners = []
+        for i in match_soup.find_all("div", "submatch-lol-player-name"):
+            summoners.append(i.text)
+
+        'extracts the played champions'
+        champions = []
+        for i in match_soup.find_all("img", "img-player-hero"):
+            champions.append(i.get("title"))
+
+        return dict(zip(summoners,champions))
+    
+
+        

@@ -9,7 +9,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-id", help="Set Team ID")
 args = parser.parse_args()
 
-id = "112031"
+#eko team id: 112031
+#test match id: 598300
+id = "598300"
 eko = Team(id)
 
-eko.generate_opgg()
+
+
