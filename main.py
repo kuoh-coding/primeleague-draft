@@ -30,15 +30,25 @@ class Team:
         print(op_link)
 
 
-    # TODO: should return an array with all matches from the team
     def get_matches(self):
-        return None
+        'Generate an array with links to all played games'
+
+        team_soup = self.get_soup("https://www.primeleague.gg/de/leagues/teams/")
+
+        match_history = []
+        table = team_soup.find_all("td", "col-3 col-text-right")
+        for row in table:
+            match = row.find("a","table-cell-container")
+            link = match.get("href")
+            match_history.append(link)
+
+        return match_history
 
 
-    def get_champions(self):
+    def get_champions(self, link: str):
         'returns a dictionary with summoners and champions'
         
-        match_soup = self.get_soup("https://www.primeleague.gg/de/leagues/matches/")
+        match_soup = self.get_soup(link)
 
         'extracts the summoner names'
         summoners = []
@@ -50,7 +60,6 @@ class Team:
         for i in match_soup.find_all("img", "img-player-hero"):
             champions.append(i.get("title"))
 
-        return dict(zip(summoners,champions))
+        if summoners or champions:
+            return dict(zip(summoners,champions))
     
-
-        
