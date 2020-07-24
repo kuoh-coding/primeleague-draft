@@ -2,14 +2,21 @@
 
 import argparse
 
-# local
-from main import Team
+from main import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-id", help="Set Team ID")
 args = parser.parse_args()
 
-#eko team id: 112031
-#test match id: 598321
-id = "112031"
-eko = Team(id)
+team_id = "112031"
+match_id = "598321"
+
+print(f"===MATCHES FROM TEAMID {team_id}===")
+matches = get_matches(team_id)
+for match in matches:
+    print(match)
+
+print(f"===CHAMPIONS IN MATCHID {match_id}===")
+champions = get_champions(match_id)
+for player in champions:
+    print(f"{player} played as {champions[player]}")
