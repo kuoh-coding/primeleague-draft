@@ -17,6 +17,6 @@ for match in matches:
     print(match)
 
 print(f"===CHAMPIONS IN MATCHID {match_id}===")
-champions = get_champions(match_id)
-for player in champions:
-    print(f"{player} played as {champions[player]}")
+match = get_champions(match_id)
+for game in match:
+    print(f"{game} played as {match[game]}")

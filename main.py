@@ -59,4 +59,19 @@ def get_champions(match_id: str):
         champions.append(i.get("title"))
 
     if summoners or champions:
-        return dict(zip(summoners, champions))
+        'from start to half length of champions'
+        game1_champions = champions[:len(champions)//2]
+        'from half length to end of champions'
+        game2_champions = champions[len(champions)//2:]
+        game1_summoners = summoners[:len(summoners)//2]
+        game2_summoners = summoners[len(summoners)//2:]
+
+        game1 = dict(zip(game1_summoners, game1_champions))
+        game2 = dict(zip(game2_summoners, game2_champions))
+        
+        match = {
+            "game1" : game1,
+            "game2" : game2
+        }
+        
+        return match
