@@ -1,6 +1,7 @@
 #!/bin/python3
 
 import requests
+import re
 from bs4 import BeautifulSoup
 
 pl_teams = "https://www.primeleague.gg/de/leagues/teams/"
@@ -29,7 +30,7 @@ def generate_opgg(team_id: str):
 
 
 def get_matches(team_id: str):
-    'Generate an array with links to all played games'
+    'Generate an array with IDs to all played games'
 
     team_soup = get_soup(pl_teams + team_id)
 
@@ -38,8 +39,12 @@ def get_matches(team_id: str):
     for row in table:
         match = row.find("a","table-cell-container")
         link = match.get("href")
-        match_history.append(link)
 
+        'cut ID from whole link'
+        regex = r"https\:\/\/www\.primeleague\.gg\/de\/leagues\/matches\/(\d+).+"
+        match_id = re.search(regex, link)
+
+        match_history.append(match_id.group(1))
     return match_history
 
 
