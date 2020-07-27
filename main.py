@@ -3,6 +3,8 @@
 import requests
 import re
 from bs4 import BeautifulSoup
+from collections import Counter
+import collections, functools, operator
 
 pl_teams = "https://www.primeleague.gg/de/leagues/teams/"
 pl_matches = "https://www.primeleague.gg/de/leagues/matches/"
@@ -15,15 +17,22 @@ def get_soup(uri: str):
     soup = BeautifulSoup(response.text, "html.parser")
     return soup
 
+def get_summoners(team_id: str):
+    summoners = []
+    team_soup = get_soup(pl_teams + team_id)
+
+    for span in team_soup.find_all("span", title="League of Legends » LoL Summoner Name (EU West)"):
+        summoner = span.get_text().lower()
+        summoners.append(summoner)
+    return summoners
+
 
 def generate_opgg(team_id: str):
     'Generate a op.gg link with all summoners from the team'
 
-    team_soup = get_soup(pl_teams + team_id)
     op_link = "https://euw.op.gg/multi/query="
 
-    for span in team_soup.find_all("span", title="League of Legends » LoL Summoner Name (EU West)"):
-        summoner = span.get_text()
+    for summoner in get_summoners(team_id):
         op_link += ("%2C" + summoner.replace(" ",""))
 
     return op_link
@@ -56,7 +65,7 @@ def get_champions(match_id: str):
     'extracts the summoner names'
     summoners = []
     for i in match_soup.find_all("div", "submatch-lol-player-name"):
-        summoners.append(i.text)
+        summoners.append(i.text.lower())
 
     'extracts the played champions'
     champions = []
@@ -80,3 +89,18 @@ def get_champions(match_id: str):
         }
         
         return match
+
+
+def count_champions(team_id: str):
+    played_champs = []
+    for match in get_matches(team_id):
+        if get_champions(match):
+            for summoner in list(get_champions(match)["game1"]):
+                if summoner in get_summoners(team_id):
+                    played_champs.append(get_champions(match)["game1"][summoner])
+                    played_champs.append(get_champions(match)["game2"][summoner])
+
+    counted_champs = Counter(played_champs)
+    sorted_counted_champs = dict(sorted(counted_champs.items(), key=lambda x: x[1], reverse=True))
+
+    return(sorted_counted_champs)
