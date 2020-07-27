@@ -92,11 +92,14 @@ def get_champions(match_id: str):
 
 
 def count_champions(team_id: str):
+    'returns a dictionary of played champs and their play count'
     played_champs = []
+
     for match in get_matches(team_id):
         if get_champions(match):
             for summoner in list(get_champions(match)["game1"]):
                 if summoner in get_summoners(team_id):
+                    'only appends the summoners of one team'
                     played_champs.append(get_champions(match)["game1"][summoner])
                     played_champs.append(get_champions(match)["game2"][summoner])
 
