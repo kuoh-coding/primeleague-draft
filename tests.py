@@ -33,3 +33,4 @@ for key, value in count_champions(team_id).items():
 
 print(f"===OP.GG MULTILINK OF TEAMID {team_id}===")
 print(generate_opgg(team_id))
+
