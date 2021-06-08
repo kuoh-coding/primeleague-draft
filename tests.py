@@ -8,8 +8,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-id", help="Set Team ID")
 args = parser.parse_args()
 
+#team_id = "112031"
 team_id = "112031"
 match_id = "598321"
+
+print(f"===BANS AGAINST TEAMID {team_id} IN MATCH {match_id}===")
+print(get_bans_against(match_id, team_id))
+
+print(f"===BANS IN MATCH {match_id}===")
+for key, value in get_all_bans(match_id).items():
+    print(f"{key} : {value}")
 
 print(f"===MATCHS FROM TEAMID {team_id}===")
 matches = get_matches(team_id)

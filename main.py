@@ -110,3 +110,45 @@ def count_champions(team_id: str):
     sorted_counted_champs = dict(sorted(counted_champs.items(), key=lambda x: x[1], reverse=True))
 
     return(sorted_counted_champs)
+
+def get_all_bans(match_id: str):
+    'returns a dictionary with champions and their bancount'
+
+    match_soup = get_soup(pl_matches + match_id)
+    'extracts the banned champions'
+    banned_champs = []
+    for imagebox in match_soup.find_all("div", "submatch-lol-bans"):
+            for image in imagebox.findAll("img"):
+                banned_champs.append(image.get("title"))
+
+    counted_bans = Counter(banned_champs)
+    sorted_counted_bans = dict(sorted(counted_bans.items(), key=lambda x: x[1], reverse=True))
+        
+    return sorted_counted_bans
+
+def get_bans_against(match_id: str, team_id: str):
+    'returns a dictionary with champions and their bancount'
+
+    match_soup = get_soup(pl_matches + match_id)
+    'extracts the banned champions'
+    banned_champs = []
+    for imagebox in match_soup.find_all("div", "submatch-lol-bans"):
+            for image in imagebox.findAll("img"):
+                banned_champs.append(image.get("title"))
+
+    bans = []
+    blueside = started_blueside(match_id,team_id)
+    for counter,ban in enumerate(banned_champs):
+        if not(blueside ^ int(counter/5)%2):
+            bans.append(ban)
+
+    return bans
+
+def started_blueside(match_id: str, team_id: str):
+    match_soup = get_soup(pl_matches + match_id)
+    team = get_summoners(team_id)
+    if match_soup.find("div", "submatch-lol-player-name").text.lower() in team:
+        return True
+    return False
+
+
