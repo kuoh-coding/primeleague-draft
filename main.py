@@ -90,8 +90,7 @@ def get_champions(match_id: str):
         
         return match
 
-
-def count_champions(team_id: str):
+def get_champions_of_team(team_id: str):
     'returns a dictionary of played champs and their play count'
     played_champs = []
 
@@ -106,10 +105,12 @@ def count_champions(team_id: str):
                 if summoner in get_summoners(team_id):
                     played_champs.append(get_champions(match)["game2"][summoner])
 
-    counted_champs = Counter(played_champs)
-    sorted_counted_champs = dict(sorted(counted_champs.items(), key=lambda x: x[1], reverse=True))
+    return(played_champs)
 
-    return(sorted_counted_champs)
+def count_to_dict(array: list):
+    counted_array = Counter(array)
+    sorted_counted_array = dict(sorted(counted_array.items(), key=lambda x: x[1], reverse=True))
+    return sorted_counted_array
 
 def get_all_bans(match_id: str):
     'returns a dictionary with champions and their bancount'
@@ -123,7 +124,7 @@ def get_all_bans(match_id: str):
 
     counted_bans = Counter(banned_champs)
     sorted_counted_bans = dict(sorted(counted_bans.items(), key=lambda x: x[1], reverse=True))
-        
+
     return sorted_counted_bans
 
 def get_bans_against(match_id: str, team_id: str):
@@ -136,19 +137,40 @@ def get_bans_against(match_id: str, team_id: str):
             for image in imagebox.findAll("img"):
                 banned_champs.append(image.get("title"))
 
-    bans = []
+    banned_champions = []
     blueside = started_blueside(match_id,team_id)
     for counter,ban in enumerate(banned_champs):
         if not(blueside ^ int(counter/5)%2):
-            bans.append(ban)
+            banned_champions.append(ban)
 
-    return bans
+    return banned_champions
+
+def get_all_bans_against(team_id: str):
+    banned_champs = []
+
+    if get_matches(team_id):
+        for match in get_matches(team_id):
+            if get_bans_against(match, team_id):
+                for ban in get_bans_against(match, team_id):
+                    banned_champs.append(ban)
+
+    return banned_champs
+
 
 def started_blueside(match_id: str, team_id: str):
     match_soup = get_soup(pl_matches + match_id)
     team = get_summoners(team_id)
-    if match_soup.find("div", "submatch-lol-player-name").text.lower() in team:
-        return True
+    if match_soup.find("div", "submatch-lol-player-name"):
+        if match_soup.find("div", "submatch-lol-player-name").text.lower() in team:
+            return True
     return False
+
+def get_champion_presence(team_id: str):
+    champion_presence = []
+    for champion in get_champions_of_team(team_id):
+        champion_presence.append(champion)
+    for champion in get_all_bans_against(team_id):
+        champion_presence.append(champion)
+    return champion_presence
 
 
