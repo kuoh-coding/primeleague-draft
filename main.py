@@ -173,4 +173,8 @@ def get_champion_presence(team_id: str):
         champion_presence.append(champion)
     return champion_presence
 
-
+def get_name(team_id: str):
+    team_soup = get_soup(pl_teams + team_id)
+    name = team_soup.find("div","page-title")
+    
+    print(name.text)

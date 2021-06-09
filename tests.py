@@ -12,6 +12,8 @@ args = parser.parse_args()
 team_id = "136156"
 match_id = "598321"
 
+get_name(team_id)
+
 print(f"===OP.GG MULTILINK OF TEAMID {team_id}===")
 print(generate_opgg(team_id))
 
